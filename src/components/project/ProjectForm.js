@@ -1,9 +1,27 @@
+import { useEffect, useState } from 'react'
 import Input from '../form/Input'
 import styles from './ProjectForm.module.css'
 import Select from '../form/Select'
 import SubmitButton from '../form/SubmitButton'
 
-function ProjectForm({btnText}) {
+function ProjectForm({ btnText }) {
+
+    const [categories, setCategories] = useState([])
+
+    useEffect(() => {
+        fetch('http://localhost:5001/categories', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                setCategories(data)
+            })
+            .catch((err) => console.log(err))
+
+    }, [])
 
     return (
         <form className={styles.form}>
@@ -22,12 +40,11 @@ function ProjectForm({btnText}) {
             <Select
                 name="category_id"
                 text="Selecione a categoria"
-                 />
-          <SubmitButton text={btnText}/>
+                options={categories}
+            />
+            <SubmitButton text={btnText} />
         </form>
     )
-
-
 }
 
 export default ProjectForm
